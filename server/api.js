@@ -4,18 +4,18 @@ const { xkey } = process.env;
 const getAlcohol = ({ drinkname }) => {
 	return axios({
 		"method":"GET",
-		"url":"https://the-cocktail-db.p.rapidapi.com/search.php",
+		"url":`https://www.thecocktaildb.com/api/json/v1/1/search.php`,
 		"headers":{
 		"content-type":"application/octet-stream",
 		"x-rapidapi-host":"the-cocktail-db.p.rapidapi.com",
 		"x-rapidapi-key":xkey,
 		"useQueryString":true
 		},"params":{
-		"i":`${drinkname}`
+		"s":`${drinkname}`
 		}
 		})
 		.then((response)=>{
-		  return response.data.ingredients[0];
+		   return response.data.drinks[0];
 		})
 		.catch((error)=>{
 		  console.log(error)
