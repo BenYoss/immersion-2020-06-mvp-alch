@@ -1,4 +1,5 @@
 require('dotenv').config();
+const {  } = require('./db');
 const path = require('path');
 const exp = require('express');
 // const bp = require('body-parser');
@@ -21,8 +22,8 @@ app.get('/', (req, res) => {
 
 app.post('/api/drinks', (req, res) => {
 	// res.send('POST REQUEST WORKS');
-	getAlcohol(req.body).then(({ strIngredient }) => {
-		console.log(strIngredient);
+	getAlcohol(req.body).then((r) => {
+		
 	}).catch((err) => {
 		console.error(err);
 		res.status(500).end();
