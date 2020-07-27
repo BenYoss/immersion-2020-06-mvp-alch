@@ -9,3 +9,8 @@ app.listen(PORT, (err, data) => {
 	}
 	console.log(`Listening on port ${PORT}`);
 });
+
+app.get('/', (req, res) => {
+	// res.sendFile(__dirname + '/client/index.html');
+	res.end();
+});
