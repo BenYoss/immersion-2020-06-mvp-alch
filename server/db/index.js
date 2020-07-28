@@ -23,6 +23,43 @@ const drinkSchema = new mongoose.Schema({
 });
 
 const Drink = mongoose.model('Drink', drinkSchema);
+const CustomDrink = mongoose.model('CustomDrink', drinkSchema);
+
+const saveCD = ({
+    idDrink,
+    strDrink,
+    strVideo,
+    strCatagory,
+    strAlcoholic,
+    strGlass,
+    strInstructions,
+    strDrinkThumb,
+    strIngredient,
+    strMeasure,
+    dateModified }) => {
+    const CDr = new CustomDrink({
+        idDrink,
+        strDrink,
+        strVideo,
+        strCatagory,
+        strAlcoholic,
+        strGlass,
+        strInstructions,
+        strDrinkThumb,
+        strIngredient,
+        strMeasure,
+        dateModified
+    });
+    return CustomDrink.find({ idDrink: idDrink }, (err, k) => {
+        console.log('k', k);
+        if (!k.length) {
+            return CDr.save().then(() => { console.log("Custom drink saved to DB") });
+        } else {
+            console.log('failed');
+        }
+    })
+};
+
 
 const saveDrink = ({
     idDrink,
@@ -36,26 +73,26 @@ const saveDrink = ({
     strIngredient,
     strMeasure,
     dateModified }) => {
-    const Dr = new Drink({
-        idDrink,
-        strDrink,
-        strVideo,
-        strCatagory,
-        strAlcoholic,
-        strGlass,
-        strInstructions,
-        strDrinkThumb,
-        strIngredient,
-        strMeasure,
-        dateModified
-    });
-    return Drink.find({idDrink: idDrink}, (err, data) => {
-        console.log('k', k);
-        if(!k.length){
-            return Dr.save().then(() => {console.log('hit me!!')});
-        } else {
-            console.log('failed');
-        }
+        const Dr = new Drink({
+            idDrink,
+            strDrink,
+            strVideo,
+            strCatagory,
+            strAlcoholic,
+            strGlass,
+            strInstructions,
+            strDrinkThumb,
+            strIngredient,
+            strMeasure,
+            dateModified
+        });
+        return Drink.find({ idDrink: idDrink }, (err, k) => {
+            console.log('k', k);
+            if (!k.length) {
+                return Dr.save().then(() => { console.log('hit me!!') });
+            } else {
+                console.log('failed');
+            }
     })
 };
 
@@ -63,12 +100,15 @@ const getDrinks = () => {
     return Drink.find({}).exec();
 };
 
+const getCD = () => {
+    return Drink.find({}).exec();
+};
 const changeDrinkData = () => {
-
+    
 };
 
 const deleteDrink = () => {
-
+    
 };
 module.exports = {
     getDrinks,
