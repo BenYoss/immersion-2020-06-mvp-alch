@@ -40,7 +40,8 @@
         <h2 style="background-color:crimson;text-align:center;text-shadow: 2px 2px 5px black;">
             <font color="white">List of Drinks to Try:</font>
         </h2>
-        <script>let count = 0;</script>
+        <script>let count = 0; let vidCount = 0; let bool = {};</script>
+        <% let count = 0 %>
         <% for (let i = 0; i < dat.length; i++) {%>
         <h3 style="background-color:crimson;text-align:center;text-shadow: 2px 2px 5px black;" class="drink-name">
             <font color="white"><%= dat[i].strDrink %></font>
@@ -51,12 +52,12 @@
         <span><%= rmbtn %></span>
         <form action="/">
             <!-- added value property to button so that each button passes EJS variables into javascript -->
-            <button id=<%= rmbtn %> value= <%= dat[i].idDrink %>> Delete List</button>
+            <button id=<%= rmbtn %> value=<%= dat[i].idDrink %>> Delete List</button>
         </form>
         <button>Edit Drink Properties</button>
         <script>
-            $(`#remove-button${count++}`).on("click", function() {
-                axios.delete("/api/drinks", { data: { idDrink: this.value} }, () => {
+            $(`#remove-button${count++}`).on("click", function () {
+                axios.delete("/api/drinks", { data: { idDrink: this.value } }, () => {
                     console.log('deleted ' + this.value);
                 });
             })
@@ -65,19 +66,30 @@
         <% if (dat[i].strVideo !== null) {%>
         <!-- |Displays the video attached to specific drink, if video is recorded -->
         <!--    \Slices the "watch" portion of the video url and entered the "embed element" as a replacement for cross-site display. -->
-        <button id="video-button">View Video</button>
-        <iframe id="video" width="600" height="315"
-        src=<%='https://www.youtube.com/embed/'+dat[i].strVideo.slice((dat[i].strVideo.indexOf('=') + 1)) %>></iframe>
+        <% count++ %>
+        <% let vdbtn = "video-button" + `${ count }` %>
+        <% let vd = "video" + `${ count }` %>
+        <button id=<%= vdbtn %>>View Video</button>
+        <iframe id=<%= vd %> width="600" height="315"
+            src=<%='https://www.youtube.com/embed/'+dat[i].strVideo.slice((dat[i].strVideo.indexOf('=') + 1)) %>></iframe>
+        <% console.log(count) %>
         <script>
-            $("#video").hide();
-            let bool = true;
-            $("#video-button").on("click", function () {
-                bool ? $("#video").show() : $("#video").hide();
-                bool = !bool;
+            vidCount++;
+        </script>
+        <% } %>
+        <% } %>
+        <script>
+            for(let i = 0; i <= vidCount; i++){
+                bool[`${i}`] = true;
+            $(`#video${i}`).hide();
+            $(`#video-button${i}`).on("click", function () {
+                console.log('test')
+                bool[`${i}`] ? $(`#video${i}`).show() : $(`#video${i}`).hide();
+                bool[`${i}`] = !bool[`${i}`];
+                console.log(i); 
             })
-            </script>
-        <% } %>
-        <% } %>
+            }
+        </script>
     </div>
 </body>
 
