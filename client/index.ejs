@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,30 +8,77 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
+
 <body style="background-color:rgb(243, 219, 166);">
-    <h2>Search for Drinks...</h2>
-        <div class="drink-input">
-            <label>Search for a drink</label>
-            <input type="text" placeholder="search for a drink" id="drinkname" value = ""/>
+    <h1 style="background-color:crimson;text-align:left;color:white;text-shadow: 2px 2px 5px black;">Search for
+        Drinks...</h1>
+    <div class="drink-input">
+        <label>Search for a drink</label>
+        <input type="text" placeholder="search for a drink" id="drinkname" value="" />
+        <form action="/">
             <button id="drink-click">Add Drink To List</button>
-            <!-- Script to send POST to the server using axios  -->
-            <script>
-                $('#drink-click').on("click", function() {
-                    axios.post("/api/drinks", { drinkname: $('#drinkname').val() })
-                    .then(() => {console.log("success")})
+        </form>
+        <!-- Script to send POST to the server using axios  -->
+        <script>
+            $('#drink-click').on("click", function () {
+                axios.post("/api/drinks", { drinkname: $('#drinkname').val() })
+                    .then(() => {
+                        console.log("success");
+                        location.reload();
+                    })
                     .catch(err => console.error(err));
-                });
-            </script>
-        </div>
-    <div class="drink-list">
-        <h2 style="background-color:crimson;text-align:center;"><font color="white">List of Drinks to Try:</font></h2>
+            });
+        </script>
+    </div>
+    <div class="drink-creator">
+        <label>Don't like what you see? create a drink of your own!</label>
+        <form action="/create">
+            <button type="submit">Create a drink</button>
+        </form>
+    </div>
+    <div class="drink-list" style="align-items:center;">
+        <h2 style="background-color:crimson;text-align:center;text-shadow: 2px 2px 5px black;">
+            <font color="white">List of Drinks to Try:</font>
+        </h2>
+        <script>let count = 0;</script>
         <% for (let i = 0; i < dat.length; i++) {%>
-            <h3 style="background-color:crimson;text-align:center;" class="drink-name"><font color="white"><%= dat[i].strDrink %></font></h3>
-            <img src= <%= dat[i].strDrinkThumb %> width="25%" height="25%"></img>
-            <% if (dat[i].strVideo !== null) {%>
-                <iframe width="420" height="315" src=<%= 'https://www.youtube.com/embed/'+dat[i].strVideo.slice((dat[i].strVideo.indexOf('=') + 1)) %>></iframe>
-            <% } %>
+        <h3 style="background-color:crimson;text-align:center;text-shadow: 2px 2px 5px black;" class="drink-name">
+            <font color="white"><%= dat[i].strDrink %></font>
+        </h3>
+        <img src=<%= dat[i].strDrinkThumb %> width="25%" height="25%"></img>
+        <!-- Added rmbtn variable to make dynamic id tags. -->
+        <% let rmbtn = "remove-button" + `${ i }` %>
+        <span><%= rmbtn %></span>
+        <form action="/">
+            <!-- added value property to button so that each button passes EJS variables into javascript -->
+            <button id=<%= rmbtn %> value= <%= dat[i].idDrink %>> Delete List</button>
+        </form>
+        <button>Edit Drink Properties</button>
+        <script>
+            $(`#remove-button${count++}`).on("click", function() {
+                axios.delete("/api/drinks", { data: { idDrink: this.value} }, () => {
+                    console.log('deleted ' + this.value);
+                });
+            })
+        </script>
+        <h2 class="drink-instruction"><%= dat[i].strInstructions %></h2>
+        <% if (dat[i].strVideo !== null) {%>
+        <!-- |Displays the video attached to specific drink, if video is recorded -->
+        <!--    \Slices the "watch" portion of the video url and entered the "embed element" as a replacement for cross-site display. -->
+        <button id="video-button">View Video</button>
+        <iframe id="video" width="600" height="315"
+        src=<%='https://www.youtube.com/embed/'+dat[i].strVideo.slice((dat[i].strVideo.indexOf('=') + 1)) %>></iframe>
+        <script>
+            $("#video").hide();
+            let bool = true;
+            $("#video-button").on("click", function () {
+                bool ? $("#video").show() : $("#video").hide();
+                bool = !bool;
+            })
+            </script>
+        <% } %>
         <% } %>
     </div>
 </body>
+
 </html>
