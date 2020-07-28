@@ -1,8 +1,11 @@
 require('dotenv').config();
-const { getDrinks, saveDrink, saveCD, getCD, deleteDrink, changeDrinkData } = require('./db');
 const path = require('path');
 const exp = require('express');
+//-----------------------------------------------------------------------------------------
+//|Required methods from external files
+const { getDrinks, saveDrink, saveCD, getCD, deleteDrink, changeDrinkData } = require('./db');
 const { getAlcohol } = require('./api');
+//-----------------------------------------------------------------------------------------
 const app = exp();
 const { PORT } = process.env;
 let drinkes = [];
@@ -26,6 +29,10 @@ app.get('/', (req, res) => {
 	});
 });
 
+app.get('/create', (req, res) => {
+	res.render('../client/create.ejs', {});
+})
+
 app.post('/api/drinks', (req, res) => {
 	//getAlcohol is the API method
 	//outputs r, the data retrieved from API
@@ -46,25 +53,32 @@ app.post('/api/drinks', (req, res) => {
 	}));
 });
 
-app.post('/create/drinks', (req, res) => {
-	//getAlcohol is the API method
-	//outputs r, the data retrieved from API
+
+app.put('/api/drinks', (req, res) => {
 	console.log(req.body);
-	res.send(getAlcohol(req.body).then((r) => {
-		//saveDrink is the save method
-		//should save r to database
-		saveDrink(r)
-			.then(() => {
-				//confirmation the drink is saved in database
-				console.log('saved');
-				res.status(201).redirect('/');
-			})
+	// changeDrinkData().then((data) => {
+	// 	console.log("drink has been changed!");
+	// 	res.status(204).end();
+	// }).catch((err) => {
+	// 	console.error(err);
+	// 	res.status(500).end();
+	// });
+});
+
+app.delete('/api/drinks', (req, res) => {
+	console.log(req.body);
+	deleteDrink(req.body).then((data) => {
+		console.log("drink has been Deleted1!");
+		res.status(204).end();
 	}).catch((err) => {
-		//if Drink fails to save.
 		console.error(err);
 		res.status(500).end();
-	}));
+	});
 });
+
+//DRINK CREATION TANK!!
+// FOR CUSTOM DRINKS!!
+// ============================================================================
 
 app.get('/create/drinks', (req, res) => {
 	getCD().then((data) => {
