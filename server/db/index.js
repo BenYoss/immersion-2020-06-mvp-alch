@@ -112,9 +112,13 @@ const changeDrinkData = (drinkname, options) => {
 };
 //|DeleteDrink method deletes drinks passed into it based on name
 //  \Should delete any drinks from the drink list.
-const deleteDrink = (drinkname) => {
-    return Drink.deleteOne({ strDrink: drinkname }, (err, success) => {
-        console.log(`Drink, ${drinkname} has been deleted!`);
+const deleteDrink = ({ idDrink }) => {
+    return Drink.deleteOne({ idDrink: idDrink }, (err, success) => {
+        if(err) {
+            console.error(err);
+            return;
+        }
+        console.log(`Drink, ${idDrink} has been deleted!`);
     })
 };
 
