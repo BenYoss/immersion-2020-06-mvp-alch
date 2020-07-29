@@ -53,6 +53,10 @@ app.post('/edit', (req, res) => {
 	});
 })
 
+app.get('/error'), (req, res) => {
+	res.send("request failed: it does not seem like that drink is recorded in our databases. If you'd like, add the drink you are looking for into our systems to prevent this issue happening to another user. Thanks. --Barbase team")
+}
+
 app.post('/api/drinks', (req, res) => {
 	//getAlcohol is the API method
 	//outputs r, the data retrieved from API
@@ -75,14 +79,13 @@ app.post('/api/drinks', (req, res) => {
 			});
 			r['strIngredient'] = ing;
 			r['strMeasure'] = mea
+			saveDrink(r)
+				.then(() => {
+					//confirmation the drink is saved in database
+					console.log('saved');
+					res.status(201).end();
+				})
 		}
-		console.log(r);
-		saveDrink(r)
-			.then(() => {
-				//confirmation the drink is saved in database
-				console.log('saved');
-				res.status(201).end();
-			})
 	}).catch((err) => {
 		//if Drink fails to save.
 		console.error(err);
