@@ -9,6 +9,7 @@ const { getAlcohol } = require('./api');
 const app = exp();
 const { PORT } = process.env;
 let drinkes = [];
+let user;
 app.set('view engine', 'ejs');
 
 app.listen(PORT, (err, data) => {
@@ -21,18 +22,25 @@ app.listen(PORT, (err, data) => {
 app.use(exp.json());
 
 app.get('/', (req, res) => {
-	getDrinks().then((data) => {
-		res.render('../client/index.ejs', { dat: data });
-	}).catch((err) => {
-		console.error(err);
-		res.status(500).end();
-	});
+		getDrinks(user).then((data) => {
+			res.render('../client/index.ejs', { dat: data, user: user });
+		}).catch((err) => {
+			console.error(err);
+			res.status(500).end();
+		});
 });
 
 app.get('/create', (req, res) => {
 	res.render('../client/create.ejs', {});
 })
+
+app.post('/user', (req, res) => {
+	user = req.body.username;
+	res.redirect("/");
+})
+
 let idStorage = '';
+
 app.get('/edit', (req, res) => {
 	// console.log(idStorage);
 	getDrink({ idDrink: idStorage }).then((data) => {
@@ -60,7 +68,7 @@ app.get('/error'), (req, res) => {
 app.post('/api/drinks', (req, res) => {
 	//getAlcohol is the API method
 	//outputs r, the data retrieved from API
-	console.log(req.body);
+	// console.log(req.body.username, req.body.drinkname);
 	res.send(getAlcohol(req.body.drinkname).then((r) => {
 		//saveDrink is the save method
 		//should save r to database
@@ -79,6 +87,8 @@ app.post('/api/drinks', (req, res) => {
 			});
 			r['strIngredient'] = ing;
 			r['strMeasure'] = mea
+			r['username'] = req.body.username;
+			console.log(r);
 			saveDrink(r)
 				.then(() => {
 					//confirmation the drink is saved in database
