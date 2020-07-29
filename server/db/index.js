@@ -99,15 +99,19 @@ const saveDrink = ({
 const getDrinks = () => {
     return Drink.find({}).exec();
 };
+const getDrink = (options) => {
+    return Drink.findOne(options).exec();
+};
 
 const getCD = () => {
     return Drink.find({}).exec();
 };
 //|DeleteDrink method updates drinks passed into it through specific options
 //  \Should delete any drinks from the drink list.
-const changeDrinkData = (drinkname, options) => {
-    return Drink.updateOne({strDrink: drinkname}, options, (err, success) => {
-        console.log(`Drink, ${drinkname} has been updated with ${options}!`);
+const changeDrinkData = (options) => {
+    console.log(options.idDrink);
+    return Drink.updateOne({idDrink: options.idDrink}, options, (err, success) => {
+        console.log(`Drink, ${options.strDrink} has been updated with ${options}!`);
     });
 };
 //|DeleteDrink method deletes drinks passed into it based on name
@@ -128,5 +132,6 @@ module.exports = {
     getCD,
     saveCD,
     changeDrinkData,
-    deleteDrink
+    deleteDrink,
+    getDrink
 }
