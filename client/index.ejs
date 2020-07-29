@@ -10,8 +10,7 @@
 </head>
 
 <body style="background-color:rgb(243, 219, 166);">
-    <h1 style="background-color:crimson;text-align:left;color:white;text-shadow: 2px 2px 5px black;">Search for
-        Drinks...</h1>
+    <h1 style="background-color:crimson;text-align:left;color:white;text-shadow: 2px 2px 5px black;"> - Bar - Base -</h1>
     <div class="drink-input">
         <label>Search for a drink</label>
         <input type="text" placeholder="search for a drink" id="drinkname" value="" />
@@ -43,7 +42,7 @@
         <!-- count sets the counter for each update/delete function of each drink
         vidcount is the counter for each video element a drink contains
         bool acts as a conditional boolean. -->
-        <script>let count = 0; let vidCount = 0; let bool = {};</script>
+        <script>let count = 0; let vidCount = 0; let bool = {}; let delCount = 0;</script>
         <% let count = 0 %>
         <% for (let i = 0; i < dat.length; i++) {%>
         <h3 style="background-color:crimson;text-align:center;text-shadow: 2px 2px 5px black;" class="drink-name">
@@ -53,7 +52,6 @@
         <!-- Added rmbtn variable to make dynamic id tags. -->
         <% let rmbtn = "remove-button" + `${ i }` %>
         <% let edbtn = "edit-button" + `${ i }` %>
-        <span><%= rmbtn %></span>
         <form action="/">
             <!-- added value property to button so that each button passes EJS variables into javascript -->
             <button id=<%= rmbtn %> value=<%= dat[i].idDrink %>> Delete List</button>
@@ -65,23 +63,28 @@
             // count++;
         </script>
         <script>
-            $(`#edit-button${count++}`).on("click", function() {
+            $(`#edit-button${count++}`).on("click", function () {
                 console.log('i work')
                 axios.post("/edit", { idDrink: this.value })
-                .then(() => {
-                    console.log("Loading drink data");
-                })
-                .catch(err => console.warn(err));
+                    .then(() => {
+                        console.log("Loading drink data");
+                    })
+                    .catch(err => console.warn(err));
             })
-        </script>
-        <script>
-            $(`#remove-button${count}`).on("click", function () {
+            $(`#remove-button${delCount++}`).on("click", function () {
+                console.log(this.value)
                 axios.delete("/api/drinks", { data: { idDrink: this.value } }, () => {
                     console.log('deleted ' + this.value);
                 });
             })
         </script>
+        <script>
+        </script>
         <h4 class="drink-glass">Recommended Glass: <%= dat[i].strGlass %></h4>
+        <h3 style="background-color:crimson;text-shadow: 2px 2px 5px black;color: white;max-width: 60mm;text-align: center;">Ingredients:</h3>
+        <% for(let j = 0; j < dat[i].strIngredient.length; j++) { %>
+        <h4 class="drink-ingredients"><%= dat[i].strIngredient[j] %> <%= dat[i].strMeasure[j] %></h4>
+        <% } %>
         <h2 class="drink-instruction">Instructions: <%= dat[i].strInstructions %></h2>
         <% if (dat[i].strVideo !== null) {%>
         <!-- |Displays the video attached to specific drink, if video is recorded -->
