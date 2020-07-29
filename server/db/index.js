@@ -19,6 +19,7 @@ const drinkSchema = new mongoose.Schema({
     "strDrinkThumb": { type: String },
     "strIngredient": { type: Array },
     "strMeasure": { type: Array },
+    "username": { type: String },
     "dateModified": { type: Date },
 });
 
@@ -72,6 +73,7 @@ const saveDrink = ({
     strDrinkThumb,
     strIngredient,
     strMeasure,
+    username,
     dateModified }) => {
         const Dr = new Drink({
             idDrink,
@@ -84,20 +86,22 @@ const saveDrink = ({
             strDrinkThumb,
             strIngredient,
             strMeasure,
+            username,
             dateModified
         });
         return Drink.find({ idDrink: idDrink }, (err, k) => {
             console.log('k', k);
-            if (!k.length) {
-                return Dr.save().then(() => { console.log('hit me!!') });
+            if (!k.length || k.username !== username) {
+                return Dr.save().then(() => { console.log('hit me!!', username) });
             } else {
                 console.log('failed');
             }
     })
 };
 
-const getDrinks = () => {
-    return Drink.find({}).exec();
+const getDrinks = (username) => {
+    console.log('username for drinks', username);
+    return Drink.find({ username: username }).exec();   
 };
 const getDrink = (options) => {
     return Drink.findOne(options).exec();
