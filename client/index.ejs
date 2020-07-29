@@ -40,6 +40,9 @@
         <h2 style="background-color:crimson;text-align:center;text-shadow: 2px 2px 5px black;">
             <font color="white">List of Drinks to Try:</font>
         </h2>
+        <!-- count sets the counter for each update/delete function of each drink
+        vidcount is the counter for each video element a drink contains
+        bool acts as a conditional boolean. -->
         <script>let count = 0; let vidCount = 0; let bool = {};</script>
         <% let count = 0 %>
         <% for (let i = 0; i < dat.length; i++) {%>
@@ -49,20 +52,37 @@
         <img src=<%= dat[i].strDrinkThumb %> width="25%" height="25%"></img>
         <!-- Added rmbtn variable to make dynamic id tags. -->
         <% let rmbtn = "remove-button" + `${ i }` %>
+        <% let edbtn = "edit-button" + `${ i }` %>
         <span><%= rmbtn %></span>
         <form action="/">
             <!-- added value property to button so that each button passes EJS variables into javascript -->
             <button id=<%= rmbtn %> value=<%= dat[i].idDrink %>> Delete List</button>
         </form>
-        <button>Edit Drink Properties</button>
+        <form action="/edit">
+            <button id=<%= edbtn %> value=<%= dat[i].idDrink %>>Edit Drink Properties</button>
+        </form>
         <script>
-            $(`#remove-button${count++}`).on("click", function () {
+            // count++;
+        </script>
+        <script>
+            $(`#edit-button${count++}`).on("click", function() {
+                console.log('i work')
+                axios.post("/edit", { idDrink: this.value })
+                .then(() => {
+                    console.log("Loading drink data");
+                })
+                .catch(err => console.warn(err));
+            })
+        </script>
+        <script>
+            $(`#remove-button${count}`).on("click", function () {
                 axios.delete("/api/drinks", { data: { idDrink: this.value } }, () => {
                     console.log('deleted ' + this.value);
                 });
             })
         </script>
-        <h2 class="drink-instruction"><%= dat[i].strInstructions %></h2>
+        <h4 class="drink-glass">Recommended Glass: <%= dat[i].strGlass %></h4>
+        <h2 class="drink-instruction">Instructions: <%= dat[i].strInstructions %></h2>
         <% if (dat[i].strVideo !== null) {%>
         <!-- |Displays the video attached to specific drink, if video is recorded -->
         <!--    \Slices the "watch" portion of the video url and entered the "embed element" as a replacement for cross-site display. -->
@@ -79,15 +99,16 @@
         <% } %>
         <% } %>
         <script>
-            for(let i = 0; i <= vidCount; i++){
+            // i in this case is used as an index for each video instance, making a toggle on-off code block for each
+            for (let i = 0; i <= vidCount; i++) {
                 bool[`${i}`] = true;
-            $(`#video${i}`).hide();
-            $(`#video-button${i}`).on("click", function () {
-                console.log('test')
-                bool[`${i}`] ? $(`#video${i}`).show() : $(`#video${i}`).hide();
-                bool[`${i}`] = !bool[`${i}`];
-                console.log(i); 
-            })
+                $(`#video${i}`).hide();
+                $(`#video-button${i}`).on("click", function () {
+                    console.log('test')
+                    bool[`${i}`] ? $(`#video${i}`).show() : $(`#video${i}`).hide();
+                    bool[`${i}`] = !bool[`${i}`];
+                    console.log(i);
+                })
             }
         </script>
     </div>
