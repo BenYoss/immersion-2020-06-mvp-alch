@@ -57,9 +57,26 @@ app.post('/api/drinks', (req, res) => {
 	//getAlcohol is the API method
 	//outputs r, the data retrieved from API
 	console.log(req.body);
-	res.send(getAlcohol(req.body).then((r) => {
+	res.send(getAlcohol(req.body.drinkname).then((r) => {
 		//saveDrink is the save method
 		//should save r to database
+		let ing = [];
+		let mea = [];
+		console.log(r);
+		if(r) {
+			Object.keys(r).forEach((elt) => {
+				//iterate over each ingredient/measurement and record in array
+				if (elt.includes("Ingredient") && r[`${elt}`] !== null) {
+					ing.push(r[`${elt}`]);
+				}
+				if (elt.includes("Measure") && r[`${elt}`] !== null) {
+					mea.push(r[`${elt}`]);
+				}
+			});
+			r['strIngredient'] = ing;
+			r['strMeasure'] = mea
+		}
+		console.log(r);
 		saveDrink(r)
 			.then(() => {
 				//confirmation the drink is saved in database
@@ -85,6 +102,7 @@ app.put('/api/drinks', (req, res) => {
 });
 
 app.delete('/api/drinks', (req, res) => {
+	console.log(req.body);
 	deleteDrink(req.body).then((data) => {
 		console.log("drink has been Deleted1!");
 		res.status(204).end();
@@ -99,6 +117,7 @@ app.delete('/api/drinks', (req, res) => {
 // ============================================================================
 
 app.get('/create/drinks', (req, res) => {
+	
 	getCD().then((data) => {
 		res.status(200).send(data);
 	}).catch((err) => {
