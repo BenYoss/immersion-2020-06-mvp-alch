@@ -20,6 +20,8 @@ const getAlcohol = (drinkname) => {
 			if (response.data.drinks !== null && response) {
 				return response.data.drinks[0];
 			} else {
+				//This method also surfs for custom drinks!
+				//Proxy was added to prevent connection errors to local host.
 				console.log("help")
 				return axios.get("/create/drinks", { proxy: { host: host, port: PORT } })
 					.then(({ data }) => {
@@ -33,11 +35,6 @@ const getAlcohol = (drinkname) => {
 							}
 						})
 						return h[0];
-						// if(res.data){
-						// 	return res.data;
-						// } else {
-						// 	console.log('failed to retrieve data: nothing seems to be in our system');
-						// }
 					})
 					.catch(err => console.error(err));
 			}
