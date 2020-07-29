@@ -12,7 +12,25 @@
 <body style="background-color:rgb(243, 219, 166);">
     <h1 style="background-color:crimson;text-align:left;color:white;text-shadow: 2px 2px 5px black;"> - Bar - Base -</h1>
     <div class="drink-input">
+        <% if(!user){ %>
+            <h3>Insert a username first:</h3>
+            <input type="text" placeholder="username" id="username" value="" />
+            <form action="/">
+                <button id="adduser">Add User</button>
+            </form>
+            <script>
+                $("#adduser").on("click", function () {
+                    axios.post("/user", { username: $("#username").val() })
+                        .then(() => {
+                            console.log("Loaded username!");
+                        })
+                        .catch(err => console.warn(err));
+                })
+            </script>
+        <% } %>
         <label>Search for a drink</label>
+        <button id="username-bt" value=<%= user %>></button>
+        <script>$("#username-bt").hide()</script>
         <input type="text" placeholder="search for a drink" id="drinkname" value="" />
         <!-- <form action="/"> -->
             <button id="drink-click">Add Drink To List</button>
@@ -20,7 +38,7 @@
         <!-- Script to send POST to the server using axios  -->
         <script>
             $('#drink-click').on("click", function () {
-                axios.post("/api/drinks", { drinkname: $('#drinkname').val() })
+                axios.post("/api/drinks", { drinkname: $('#drinkname').val(), username: $("#username-bt").val() })
                     .then(() => {
                         console.log("success");
                         location.reload();
@@ -37,7 +55,7 @@
     </div>
     <div class="drink-list" style="align-items:center;">
         <h2 style="background-color:crimson;text-align:center;text-shadow: 2px 2px 5px black;">
-            <font color="white">List of Drinks to Try:</font>
+            <font color="white"><%= user || "Anonymous" %>'s Drinks</font>
         </h2>
         <!-- count sets the counter for each update/delete function of each drink
         vidcount is the counter for each video element a drink contains
@@ -65,7 +83,7 @@
         <script>
             $(`#edit-button${count++}`).on("click", function () {
                 console.log('i work')
-                axios.post("/edit", { idDrink: this.value })
+                axios.post("/edit", { idDrink: this.value, username: $("#username-bt").val() })
                     .then(() => {
                         console.log("Loading drink data");
                     })
@@ -73,14 +91,15 @@
             })
             $(`#remove-button${delCount++}`).on("click", function () {
                 console.log(this.value)
-                axios.delete("/api/drinks", { data: { idDrink: this.value } }, () => {
-                    console.log('deleted ' + this.value);
+                axios.delete("/api/drinks", { data: { idDrink: this.value, username: $("#username-bt").val() } }, () => {
+                    console.log('deleted ' + this.value + "for" + $("#username-bt").val());
                 });
             })
         </script>
         <script>
         </script>
         <h4 class="drink-glass">Recommended Glass: <%= dat[i].strGlass %></h4>
+        <h4 class="drink-lvl">Alcohol Level: <%= dat[i].strAlcoholic %></h4>
         <h3 style="background-color:crimson;text-shadow: 2px 2px 5px black;color: white;max-width: 60mm;text-align: center;">Ingredients:</h3>
         <% for(let j = 0; j < dat[i].strIngredient.length; j++) { %>
         <h4 class="drink-ingredients"><%= dat[i].strIngredient[j] %> <%= dat[i].strMeasure[j] %></h4>
