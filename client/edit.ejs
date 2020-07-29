@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<!-- list of inputs for data to be taken in and shipped to DB -->
+
+<body style="background-color:rgb(243, 219, 166);text-shadow: 2px 2px 5px black;">
+    <form action="/">
+        <button id="redirector"
+            style="background-color:rgb(116, 25, 25);color:white;text-align: left;font-size: 5mm;">Go back</button>
+    </form>
+    <h1 style="background-color:crimson;text-align:left;color:white;">Edit <%= dat.strDrink %></h1>
+    <div class="dn">
+        <ul style="text-align: left; background-color: crimson; max-width: 5cm; color:white">Title:</ul>
+        <input type="text" placeholder="Name of the drink" id="strDrink" value=<%= dat.strDrink %> />
+    </div>
+    <div class="dv">
+        <ul style="text-align: left; background-color: crimson; max-width: 5cm; color:white">Video:</ul>
+        <input type="text" placeholder="provide a video for drink <pref: youtube>" id="strVideo" size="50"
+            value=<%= dat.strVideo %> />
+    </div>
+    <div class="dc">
+        <ul style="text-align: left; background-color: crimson; max-width: 5cm; color:white">Catagory:</ul>
+        <input type="text" placeholder="drink catagory" id="strCatagory" value=<%= dat.strCatagory %> size="10" />
+    </div>
+    <div class="da">
+        <ul style="text-align: left; background-color: crimson; max-width: 5cm; color:white">Alcohol level:</ul>
+        <input type="text" placeholder="How alcoholic the drink is" id="strAlcoholic" value=<%= dat.strAlcoholic %> />
+    </div>
+    <div class="dg">
+        <ul style="text-align: left; background-color: crimson; max-width: 5cm; color:white">Glass:</ul>
+        <input type="text" placeholder="Prefered type of glass for drink" id="strGlass" size="27"
+            value=<%= dat.strGlass %> />
+    </div>
+    <div class="di">
+        <ul style="text-align: left; background-color: crimson; max-width: 5cm; color:white">Ingredients:</ul>
+        <input type="text" placeholder="Add ingredients" id="strIngredient" size="50" value="<%= dat.strIngredient %>" />
+    </div>
+    <div class="din">
+        <ul style="text-align: left; background-color: crimson; max-width: 5cm; color:white">Instructions:</ul>
+        <input type="text" placeholder="Insert instructions for how to make drink" style="width: 200mm;height: 20mm;"
+            id="strInstructions" value="<%= dat.strInstructions %>">
+    </div>
+    <div class="dt">
+        <ul style="text-align: left; background-color: crimson; max-width: 5cm; color:white">Thumbnail:</ul>
+        <input type="text" placeholder="Add a drink visual" id="strDrinkThumb" size="50"
+            value="<%= dat.strDrinkThumb %>" />
+    </div>
+    <div class="dm">
+        <ul style="text-align: left; background-color: crimson; max-width: 5cm; color:white">Measurements:</ul>
+        <input type="text" placeholder="Add measurement for ingredients" id="strMeasure" value="<%= dat.strMeasure %>" />
+    </div>
+    <div>
+        <form action="/">
+            <button id="update-drink" value=<%= dat.idDrink %>>Update drink</button>
+        </form>
+        <script>
+            $("#update-drink").on("click", function () {
+                let newDrinkData = {
+                    idDrink: this.value,
+                    strDrink: $("#strDrink").val(),
+                    strVideo: $("#strVideo").val(),
+                    strCatagory: $("#strCatagory").val(),
+                    strAlcoholic: $("#strAlcoholic").val(),
+                    strGlass: $("#strGlass").val(),
+                    strInstructions: $("#strInstructions").val(),
+                    strDrinkThumb: $("#strDrinkThumb").val(),
+                    strIngredient: $("#strIngredient").val().split(','),
+                    strMeasure: $("#strMeasure").val().split(','),
+                }
+                axios.put("/api/drinks", newDrinkData)
+                    .then(() => {
+                        console.log("updated");
+                    })
+                    .catch(err => console.error(err));
+            });
+        </script>
+    </div>
+</body>
+
+</html>
