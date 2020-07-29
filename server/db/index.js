@@ -17,8 +17,8 @@ const drinkSchema = new mongoose.Schema({
     "strGlass": { type: String },
     "strInstructions": { type: String },
     "strDrinkThumb": { type: String },
-    "strIngredient": { type: Object },
-    "strMeasure": { type: Object },
+    "strIngredient": { type: Array },
+    "strMeasure": { type: Array },
     "dateModified": { type: Date },
 });
 
@@ -104,7 +104,7 @@ const getDrink = (options) => {
 };
 
 const getCD = () => {
-    return Drink.find({}).exec();
+    return CustomDrink.find({}).exec();
 };
 //|DeleteDrink method updates drinks passed into it through specific options
 //  \Should delete any drinks from the drink list.
