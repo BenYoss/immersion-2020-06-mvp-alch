@@ -14,9 +14,9 @@
     <div class="drink-input">
         <label>Search for a drink</label>
         <input type="text" placeholder="search for a drink" id="drinkname" value="" />
-        <form action="/">
+        <!-- <form action="/"> -->
             <button id="drink-click">Add Drink To List</button>
-        </form>
+        <!-- </form> -->
         <!-- Script to send POST to the server using axios  -->
         <script>
             $('#drink-click').on("click", function () {
@@ -54,7 +54,7 @@
         <% let edbtn = "edit-button" + `${ i }` %>
         <form action="/">
             <!-- added value property to button so that each button passes EJS variables into javascript -->
-            <button id=<%= rmbtn %> value=<%= dat[i].idDrink %>> Delete List</button>
+            <button id=<%= rmbtn %> value=<%= dat[i].idDrink %>> Delete Drink</button>
         </form>
         <form action="/edit">
             <button id=<%= edbtn %> value=<%= dat[i].idDrink %>>Edit Drink Properties</button>
